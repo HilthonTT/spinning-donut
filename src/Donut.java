@@ -28,9 +28,6 @@ public class Donut {
             b += 0.03;
             Thread.sleep(30);
         }
-
-        // for (int i = 0; i < 250; i++) {
-        // }
     }
 
     private static void renderFrame(double a, double b) {
