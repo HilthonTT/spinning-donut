@@ -87,7 +87,7 @@ public class Donut {
      * Renders one frame with rotation {@code a} about the x-axis and {@code b}
      * about the z-axis.
      */
-    CharSequence render(double a, double b) {
+    private CharSequence render(double a, double b) {
         double cosA = Math.cos(a);
         double sinA = Math.sin(a);
         double cosB = Math.cos(b);
