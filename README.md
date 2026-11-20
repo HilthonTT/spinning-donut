@@ -10,7 +10,7 @@ From the repository root:
 
 ```sh
 javac -d out src/Donut.java
-java -cp out src.Donut
+java -cp out Donut
 ```
 
 Press `Ctrl+C` to stop.
