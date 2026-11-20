@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build and run (Java ${{ matrix.java }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        java: ['17', '21', '25']
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+
+      - name: Compile
+        run: javac -Xlint:all -Werror -d out src/Donut.java
+
+      - name: Run
+        run: |
+          # The donut spins forever, so run it for a few seconds. Being stopped
+          # by `timeout` (exit status 124) means it was still running; any other
+          # status means it crashed or exited early.
+          set +e
+          timeout 5s java -cp out Donut > output.txt
+          status=$?
+          set -e
+
+          if [ "$status" -ne 124 ]; then
+            echo "::error::Expected Donut to keep running until stopped, but it exited with status $status"
+            exit 1
+          fi
+
+          # Make sure it actually drew something.
+          if ! grep -q '[#$@]' output.txt; then
+            echo "::error::Donut ran but did not render any frames"
+            exit 1
+          fi
+
+          echo "Donut ran for 5 seconds and rendered $(wc -c < output.txt) bytes of output."
